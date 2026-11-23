@@ -1,0 +1,35 @@
+[
+  {
+    "file": "services-agreement.txt",
+    "items": {
+      "parties": { "accept": ["found"], "quoteIncludes": ["Harrowgate Analytics Limited"] },
+      "start_date_and_term": { "accept": ["found"], "quoteIncludes": ["initial period of twenty-four", "1 March 2026"] },
+      "payment_terms": { "accept": ["found"], "quoteIncludes": ["within thirty (30) days of the date of the invoice", "monthly fee of £8,500"] },
+      "termination": { "accept": ["found"], "quoteIncludes": ["may terminate this Agreement"] },
+      "limitation_of_liability": { "accept": ["found"], "quoteIncludes": ["shall not exceed", "neither party shall be liable"] },
+      "confidentiality": { "accept": ["found"], "quoteIncludes": ["Confidential Information confidential"] },
+      "governing_law": { "accept": ["found"], "quoteIncludes": ["laws of England and Wales"] },
+      "auto_renewal": {
+        "accept": ["not_found", "found"],
+        "quoteIncludes": ["may agree in writing to enter into a new agreement"],
+        "why": "Nothing renews by itself, so not_found. Clause 2.2 leaves renewal to a new written agreement, and reporting that clause is also defensible."
+      }
+    }
+  },
+  {
+    "file": "mutual-nda.txt",
+    "items": {
+      "parties": { "accept": ["found"], "quoteIncludes": ["Tidewater Robotics, Inc."] },
+      "start_date_and_term": { "accept": ["found"], "quoteIncludes": ["initial term of one (1) year"] },
+      "payment_terms": { "accept": ["not_found"] },
+      "termination": { "accept": ["found"], "quoteIncludes": ["thirty (30) days' written notice"] },
+      "limitation_of_liability": {
+        "accept": ["not_found", "unclear"],
+        "why": "There is no liability clause. A warranty disclaimer is adjacent, so unclear is defensible."
+      },
+      "confidentiality": { "accept": ["found"], "quoteIncludes": ["in strict confidence"] },
+      "governing_law": { "accept": ["found"], "quoteIncludes": ["State of Delaware"] },
+      "auto_renewal": { "accept": ["found"], "quoteIncludes": ["automatically renew for successive periods"] }
+    }
+  }
+]

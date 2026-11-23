@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+  --paper: #f7f7f5;
+  --card: #ffffff;
+  --ink: #1c1f23;
+  --muted: #5d646d;
+  --line: #dfe1e4;
+  --accent: #1f4f8f;
+  --accent-ink: #ffffff;
+  --mark: #fff0b3;
+  --found: #1d6b43;
+  --found-bg: #e3f3ea;
+  --missing: #5d646d;
+  --missing-bg: #eceef0;
+  --unclear: #8a5200;
+  --unclear-bg: #fdf0d9;
+  --danger: #a3261d;
+  --danger-bg: #fbe6e4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15171a;
+    --card: #1d2024;
+    --ink: #e9ebee;
+    --muted: #a0a8b2;
+    --line: #343940;
+    --accent: #8ab8f5;
+    --accent-ink: #10151c;
+    --mark: #5c4a0c;
+    --found: #7fd6a6;
+    --found-bg: #16382a;
+    --missing: #b3bac3;
+    --missing-bg: #2b3036;
+    --unclear: #f0c274;
+    --unclear-bg: #40300f;
+    --danger: #f3a39c;
+    --danger-bg: #431d1a;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-mark: var(--mark);
+  --color-found: var(--found);
+  --color-found-bg: var(--found-bg);
+  --color-missing: var(--missing);
+  --color-missing-bg: var(--missing-bg);
+  --color-unclear: var(--unclear);
+  --color-unclear-bg: var(--unclear-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+}
+
+/* Contract text is set apart from the app's own words. */
+.contract-text {
+  /* Lining figures: Georgia's old-style zero reads like the letter o. */
+  font-family: Cambria, "Iowan Old Style", "Times New Roman", serif;
+  font-variant-numeric: lining-nums;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* A preview reads as running text; the full clause keeps its line breaks. */
+.contract-quote {
+  white-space: normal;
+}
+
+mark {
+  background: var(--mark);
+  color: inherit;
+  border-radius: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

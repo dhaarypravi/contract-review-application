@@ -1,0 +1,55 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement (this "Agreement") is entered into as of June 15, 2026 (the "Effective Date") by and between Tidewater Robotics, Inc., a Delaware corporation ("Tidewater"), and Calloway Instruments LLC, a Washington limited liability company ("Calloway"). Each may be referred to as a "Party".
+
+The Parties wish to explore a possible collaboration on underwater inspection equipment (the "Purpose") and expect to share information that each regards as confidential.
+
+1. Definition of Confidential Information
+
+"Confidential Information" means non-public technical, business and financial information disclosed by one Party (the "Discloser") to the other (the "Recipient") for the Purpose, whether orally, in writing or by inspection of equipment.
+
+2. Obligations
+
+2.1 The Recipient shall hold the Discloser's Confidential Information in strict confidence, shall use it only for the Purpose, and shall not disclose it to any person other than those of its employees and advisors who need to know it for the Purpose and who are bound by obligations at least as protective as these.
+2.2 The Recipient shall protect Confidential Information with at least the degree of care it uses for its own information of a similar kind, and in no event less than reasonable care.
+
+3. Exclusions
+
+The obligations in Section 2 do not apply to information that the Recipient can show is or becomes public through no fault of the Recipient, was already known to the Recipient, is received from a third party free to disclose it, or is developed independently.
+
+4. Term and Renewal
+
+4.1 This Agreement begins on the Effective Date and continues for an initial term of one (1) year.
+4.2 After the initial term, this Agreement shall automatically renew for successive periods of one (1) year each, unless either Party gives the other written notice of non-renewal at least sixty (60) days before the end of the then-current period.
+
+5. Termination
+
+5.1 Either Party may terminate this Agreement at any time by giving the other Party thirty (30) days' written notice.
+5.2 The obligations in Section 2 survive for three (3) years after this Agreement expires or is terminated.
+
+6. Return of Materials
+
+On the Discloser's written request, the Recipient shall promptly return or destroy all documents and materials containing Confidential Information, except for copies kept automatically in routine backups.
+
+7. No License; No Warranty
+
+7.1 Nothing in this Agreement grants a license under any patent, copyright or other right.
+7.2 All Confidential Information is provided "as is", without any warranty, express or implied, as to its accuracy or completeness.
+
+8. Remedies
+
+The Parties agree that a breach of Section 2 may cause harm for which money would not be an adequate remedy, and that the Discloser may seek injunctive relief in addition to any other remedy available.
+
+9. Governing Law
+
+This Agreement shall be governed by the laws of the State of Delaware, without regard to its conflict of laws rules.
+
+10. Miscellaneous
+
+This Agreement is the entire agreement of the Parties on its subject and may be amended only in a writing signed by both Parties. Neither Party is obliged to enter into any further agreement.
+
+Tidewater Robotics, Inc.
+By: R. Amsel, Chief Executive Officer
+
+Calloway Instruments LLC
+By: D. Petrova, Managing Member

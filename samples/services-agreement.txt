@@ -1,0 +1,78 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (the "Agreement") is made by and between Harrowgate Analytics Limited, a company incorporated in England and Wales with company number 09999001 and its registered office at 14 Quayside Lane, Bristol ("Harrowgate"), and Pellow & Finch Retail plc, a company incorporated in England and Wales with company number 09999002 and its registered office at 200 Meridian Street, Leeds (the "Customer"). Harrowgate and the Customer are each a "party" and together the "parties".
+
+BACKGROUND
+
+(A) Harrowgate provides demand forecasting and reporting services to retailers.
+(B) The Customer wishes to receive those services on the terms set out below.
+
+1. DEFINITIONS
+
+1.1 "Confidential Information" means all information, in any form, that one party discloses to the other in connection with this Agreement and that is marked confidential or would reasonably be regarded as confidential.
+1.2 "Effective Date" means 1 March 2026.
+1.3 "Services" means the forecasting and reporting services described in Schedule A.
+
+2. COMMENCEMENT AND TERM
+
+2.1 This Agreement commences on the Effective Date and continues for an initial period of twenty-four (24) months, unless terminated earlier in accordance with clause 7.
+2.2 At the end of the initial period the parties may agree in writing to enter into a new agreement. Neither party is obliged to do so.
+
+3. SERVICES
+
+3.1 Harrowgate shall provide the Services with reasonable skill and care and in accordance with good industry practice.
+3.2 The Customer shall give Harrowgate access to the sales and stock data reasonably needed to provide the Services.
+3.3 Harrowgate may use subcontractors but remains responsible for their work.
+
+4. FEES AND PAYMENT
+
+4.1 The Customer shall pay Harrowgate a monthly fee of £8,500, exclusive of value added tax.
+4.2 Harrowgate shall invoice the Customer monthly in arrears. The Customer shall pay each valid invoice within thirty (30) days of the date of the invoice.
+4.3 If the Customer does not pay an undisputed amount by its due date, Harrowgate may charge interest on that amount at 4% per year above the Bank of England base rate, accruing daily until payment.
+4.4 The Customer may withhold an amount that it disputes in good faith, provided that it gives written reasons within ten (10) days of receiving the invoice.
+
+5. CONFIDENTIALITY
+
+5.1 Each party shall keep the other party's Confidential Information confidential, shall use it only to perform its obligations or exercise its rights under this Agreement, and shall not disclose it to any third party except as permitted by this clause.
+5.2 A party may disclose Confidential Information to its employees, professional advisers and subcontractors who need to know it and are bound by equivalent obligations, or where disclosure is required by law.
+5.3 The obligations in this clause continue for five (5) years after this Agreement ends.
+
+6. INTELLECTUAL PROPERTY
+
+6.1 Harrowgate retains all rights in its forecasting models and software. The Customer retains all rights in its data.
+6.2 Harrowgate grants the Customer a non-exclusive licence to use the reports produced as part of the Services for its internal business purposes.
+
+7. TERMINATION
+
+7.1 Either party may terminate this Agreement for convenience by giving the other party not less than ninety (90) days' prior written notice.
+7.2 Either party may terminate this Agreement with immediate effect by written notice if the other party commits a material breach and, where that breach can be remedied, fails to remedy it within thirty (30) days of being asked to do so in writing.
+7.3 Either party may terminate this Agreement with immediate effect by written notice if the other party becomes insolvent, enters administration or ceases to carry on business.
+7.4 On termination the Customer shall pay all fees for Services provided up to the date of termination.
+
+8. LIMITATION OF LIABILITY
+
+8.1 Nothing in this Agreement limits or excludes a party's liability for death or personal injury caused by its negligence, for fraud, or for any other liability that cannot be limited by law.
+8.2 Subject to clause 8.1, neither party shall be liable to the other for any loss of profit, loss of business, or any indirect or consequential loss arising out of or in connection with this Agreement.
+8.3 Subject to clause 8.1, each party's total aggregate liability arising out of or in connection with this Agreement, whether in contract, tort (including negligence) or otherwise, shall not exceed the total fees paid or payable in the twelve (12) months before the event giving rise to the claim.
+
+9. DATA PROTECTION
+
+9.1 Each party shall comply with the data protection laws that apply to it. The parties do not expect Harrowgate to process personal data on behalf of the Customer.
+
+10. GENERAL
+
+10.1 Neither party is liable for a delay caused by events beyond its reasonable control.
+10.2 A change to this Agreement is effective only if it is in writing and signed by both parties.
+10.3 Neither party may assign this Agreement without the prior written consent of the other, which shall not be unreasonably withheld.
+
+11. GOVERNING LAW AND JURISDICTION
+
+11.1 This Agreement, and any dispute arising out of or in connection with it, shall be governed by and construed in accordance with the laws of England and Wales.
+11.2 The courts of England and Wales have exclusive jurisdiction to settle any such dispute.
+
+Signed for and on behalf of Harrowgate Analytics Limited by M. Okafor, Director
+Signed for and on behalf of Pellow & Finch Retail plc by J. Lindqvist, Chief Operating Officer
+
+SCHEDULE A: SERVICES
+
+Weekly demand forecasts for up to 4,000 product lines, a monthly accuracy report, and a quarterly review meeting.

@@ -1,0 +1,83 @@
+x-app-env: &app-env
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:?set it in .env}
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+  CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:?set it in .env}
+  CLERK_JWT_KEY: ${CLERK_JWT_KEY:-}
+  APP_URL: ${APP_URL:-http://localhost:3000}
+  LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+  CHAT_MODEL: ${CHAT_MODEL:-}
+  EMBEDDING_MODEL: ${EMBEDDING_MODEL:-}
+  EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-}
+  LLM_BASE_URL: ${LLM_BASE_URL:-}
+  DATABASE_URL: postgres://postgres:postgres@postgres:5432/contract_review
+  REDIS_URL: redis://redis:6379
+  UPLOAD_DIR: /app/data/uploads
+
+x-app-build: &app-build
+  context: .
+  args:
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:?set it in .env}
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: contract_review
+    # Bound to loopback: reachable from this machine only.
+    ports: ["127.0.0.1:${POSTGRES_PORT:-5433}:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d contract_review"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    ports: ["127.0.0.1:${REDIS_PORT:-6380}:6379"]
+    volumes: ["redisdata:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    build: *app-build
+    image: contract-review-app
+    command: ["npm", "run", "db:push"]
+    environment: *app-env
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  web:
+    image: contract-review-app
+    build: *app-build
+    environment: *app-env
+    ports: ["127.0.0.1:${WEB_PORT:-3000}:3000"]
+    volumes: ["uploads:/app/data/uploads"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+
+  worker:
+    image: contract-review-app
+    build: *app-build
+    command: ["npm", "run", "worker"]
+    environment: *app-env
+    volumes: ["uploads:/app/data/uploads"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  uploads:
