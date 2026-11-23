@@ -31,6 +31,30 @@ export interface SearchTerms {
   includeOpening?: boolean;
 }
 
+/**
+ * How much of the contract the model is shown. A fixed count is not enough: six
+ * whole sections are plenty, but six one-sentence sub-clauses are a paragraph, and
+ * a clause's exceptions or survival period would be left out.
+ */
+export interface Budget {
+  min: number;
+  max: number;
+  maxChars: number;
+}
+export const ITEM_BUDGET: Budget = { min: 6, max: 14, maxChars: 6000 };
+export const QUESTION_BUDGET: Budget = { min: 8, max: 16, maxChars: 8000 };
+
+export function withinBudget<T extends { content: string }>(ranked: T[], budget: Budget): T[] {
+  const taken: T[] = [];
+  let chars = 0;
+  for (const excerpt of ranked.slice(0, budget.max)) {
+    chars += excerpt.content.length;
+    if (taken.length >= budget.min && chars > budget.maxChars) break;
+    taken.push(excerpt);
+  }
+  return taken;
+}
+
 const excerptColumns = {
   id: chunks.id,
   ordinal: chunks.ordinal,
@@ -114,7 +138,7 @@ export async function retrieve(
   userId: string,
   vector: number[],
   terms: SearchTerms,
-  limit: number,
+  budget: Budget,
 ): Promise<Excerpt[]> {
   const [semantic, lexical, opening] = await Promise.all([
     semanticQuery(contractId, userId, vector),
@@ -129,11 +153,11 @@ export async function retrieve(
     .map(({ row: { similarity: _similarity, ...excerpt } }): Excerpt => excerpt);
 
   const seen = new Set(opening.map((row) => row.id));
-  return [...opening, ...ranked.filter((row) => !seen.has(row.id))].slice(0, limit);
+  return withinBudget([...opening, ...ranked.filter((row) => !seen.has(row.id))], budget);
 }
 
 export function retrieveForItem(contractId: string, userId: string, vector: number[], item: ChecklistItem) {
-  return retrieve(contractId, userId, vector, item, 6);
+  return retrieve(contractId, userId, vector, item, ITEM_BUDGET);
 }
 
 const STOP_WORDS = new Set(

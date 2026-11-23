@@ -42,7 +42,7 @@ export const CHECKLIST: readonly ChecklistItem[] = [
     includeOpening: true,
     guidance:
       "Report when the agreement starts and how long it lasts. This item is about duration, not about how the " +
-      "agreement is ended early. If only one of the two is stated, it is still \"found\": say which is missing.",
+      "agreement is ended early. If the excerpts give only one of the two, it is still \"found\": report that one.",
   },
   {
     key: "payment_terms",
@@ -88,11 +88,10 @@ export const CHECKLIST: readonly ChecklistItem[] = [
     query:
       "Each party shall keep confidential all Confidential Information disclosed by the other party and shall " +
       "not disclose it to any third party.",
-    keywords: ["confidential", "confidentiality", "disclose", "disclosure", "proprietary", "non-disclosure"],
+    keywords: ["confidential", "confidentiality", "disclose", "disclosure", "proprietary", "non-disclosure", "survive"],
     guidance:
-      "Report the obligation to keep information confidential. The obligation and how long it survives are " +
-      'usually separate sub-clauses: a clear obligation with no visible duration is still "found", and the ' +
-      "summary should note the gap.",
+      "Report the obligation to keep information confidential, and how long it lasts if an excerpt says so. The " +
+      'two are usually separate sub-clauses: a clear obligation is "found" even when no duration is visible.',
   },
   {
     key: "governing_law",

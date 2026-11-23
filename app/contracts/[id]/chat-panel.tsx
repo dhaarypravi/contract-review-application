@@ -7,6 +7,26 @@ import { MAX_QUESTION_LENGTH, QUOTE_REMOVED } from "@/limits";
 import type { Citation } from "@/services/chat";
 import { Clause, Notice } from "../../components/ui";
 
+const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Providers send a paragraph at a time, which reads as jumps. This reveals what
+ * has arrived at a steady pace that speeds up the further behind it is. Everything
+ * it reveals has already passed the server's quote check.
+ */
+function useReveal(text: string): string {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (count > text.length) return setCount(0); // a new answer has started
+    if (count === text.length) return;
+    const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const step = instant ? text.length : Math.max(3, Math.ceil((text.length - count) / 14));
+    const timer = setTimeout(() => setCount(Math.min(text.length, count + step)), 24);
+    return () => clearTimeout(timer);
+  }, [text, count]);
+  return text.slice(0, count);
+}
+
 export function ChatPanel({
   contractId,
   ready,
@@ -24,6 +44,10 @@ export function ChatPanel({
   const aborter = useRef<AbortController | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const stick = useRef(true);
+
+  const revealed = useReveal(pending?.answer ?? "");
+  const revealedLength = useRef(0);
+  revealedLength.current = revealed.length;
 
   const loadHistory = useCallback(async () => {
     try {
@@ -44,7 +68,7 @@ export function ChatPanel({
   useEffect(() => {
     const element = scroller.current;
     if (element && stick.current) element.scrollTop = element.scrollHeight;
-  }, [messages, pending]);
+  }, [messages, pending, revealed]);
 
   async function submit() {
     const question = draft.trim();
@@ -73,7 +97,9 @@ export function ChatPanel({
       if (!answer) setDraft(question); // nothing was answered, so keep the question
     }
     // After Stop, give the server a moment to save the part already written.
-    if (signal.aborted) await new Promise((resolve) => setTimeout(resolve, 500));
+    if (signal.aborted) await pause(500);
+    // Let the last words appear before the stored answer takes their place.
+    else for (let i = 0; i < 60 && revealedLength.current < answer.length; i++) await pause(50);
     // The server's copy is the truth; local turns would drift from it.
     await loadHistory();
     setPending(null);
@@ -123,7 +149,7 @@ export function ChatPanel({
           <>
             <Question text={pending.question} />
             <div className="text-sm whitespace-pre-wrap" aria-live="polite" aria-busy="true">
-              {pending.answer || <span className="animate-pulse text-muted">Reading the contract and checking quotes…</span>}
+              {revealed || <span className="animate-pulse text-muted">Reading the contract and checking quotes…</span>}
             </div>
           </>
         )}

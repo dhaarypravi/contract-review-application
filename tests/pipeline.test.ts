@@ -21,7 +21,7 @@ import { detailOf } from "@/services/views";
 
 // A stand-in for the provider, so the pipeline's behaviour when the model is
 // wrong, slow or rate-limited can be tested without one.
-type Reply = { status?: number; body?: unknown; raw?: string };
+type Reply = { status?: number; body?: unknown; raw?: string; slowMs?: number };
 let onChat: (item: string, attempt: number, body: any) => Reply | Promise<Reply>;
 let calls: { path: string; item: string }[] = [];
 const attempts = new Map<string, number>();
@@ -50,6 +50,11 @@ const server = createServer(async (request: IncomingMessage, response: ServerRes
   calls.push({ path: "chat", item });
   const reply = await onChat(item, attempt, body);
   response.statusCode = reply.status ?? 200;
+  if (reply.raw && reply.slowMs) {
+    response.write(reply.raw); // the first words arrive in time, the end does not
+    await new Promise((resolve) => setTimeout(resolve, reply.slowMs));
+    return void response.end();
+  }
   response.end(reply.raw ?? JSON.stringify(reply.body ?? {}));
 });
 
@@ -154,6 +159,16 @@ describe("a review", () => {
     const id = await upload();
     await run(id);
     expect(attempts.get("Parties")).toBe(3);
+    expect(await findingsQuery(id, userId)).toHaveLength(8);
+  });
+
+  it("gives up on a call that hangs, and asks again", async () => {
+    retryPolicy.requestMs = 150;
+    onChat = (item, attempt) => (item === "Parties" && attempt === 1 ? new Promise(() => {}) : notFound());
+    const id = await upload();
+    await run(id);
+    retryPolicy.requestMs = 30_000;
+    expect(attempts.get("Parties")).toBe(2);
     expect(await findingsQuery(id, userId)).toHaveLength(8);
   });
 
@@ -332,6 +347,18 @@ describe("chat", () => {
       for await (const text of answerQuestion(contract, "Q?", [], gateFor(contract), new AbortController().signal)) seen.push(text);
     }).rejects.toMatchObject({ kind: "rate_limited" });
     expect(seen.join("")).toBe("\u201Cgoverned by the laws of the State of Delaware\u201D It is ");
+  });
+
+  it("asks again when the first word never comes, but leaves a slow answer alone", async () => {
+    const contract = await reviewed();
+    retryPolicy.firstTokenMs = 150;
+    const real = "<quote>governed by the laws of the State of Delaware</quote> Yes.";
+    onChat = (_item, attempt) => (attempt === 1 ? new Promise(() => {}) : { raw: delta(real) + "data: [DONE]\n\n", slowMs: 400 });
+    const pieces: string[] = [];
+    for await (const text of answerQuestion(contract, "Q?", [], gateFor(contract), new AbortController().signal)) pieces.push(text);
+    retryPolicy.firstTokenMs = 30_000;
+    expect(attempts.get("chat")).toBe(2);
+    expect(pieces.join("")).toBe("\u201Cgoverned by the laws of the State of Delaware\u201D Yes.");
   });
 
   it("stops when the reader goes away", async () => {

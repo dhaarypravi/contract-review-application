@@ -3,7 +3,7 @@
 ## Before recording
 
 - Two Clerk users, A and B, each signed in to its own browser profile.
-- As A, upload `samples/services-agreement.pdf` and wait until it is reviewed. Check that auto-renewal is "not found". The model decides, so look before you record; `samples/mutual-nda.txt` should give "not found" for payment terms.
+- As A, upload `samples/services-agreement.pdf` and `samples/mutual-nda.txt` and wait until both are reviewed (20 seconds to 2 minutes each). In every real run so far the NDA gave "not found" for payment terms and limitation of liability. The model decides, so look before you record.
 - Ask both questions below once, so you know the answers. Delete the contract and upload it again to clear the chat.
 - Copy the contract's id from the address bar.
 - If the provider is rate-limited, wait a minute. If it is the daily limit, switch `LLM_PROVIDER` in `.env` and run `docker compose up -d --build`. Changing provider rebuilds the stored vectors, so upload again.
@@ -13,11 +13,11 @@
 | Time | Show | Say |
 |---|---|---|
 | 0:00 | Landing page, sign in as A | "Contracts are checked against eight fixed points. Sign-in is Clerk." |
-| 0:20 | Upload `mutual-nda.txt`; the row shows "Processing" | "The request returns at once. A separate worker does the slow part." |
-| 0:40 | Open the reviewed PDF instead of waiting | "Each item is found, not found or unclear." |
+| 0:20 | Upload `consulting-agreement.docx`; the row shows "Processing" | "The request returns at once. A separate worker does the slow part." |
+| 0:40 | Open the reviewed PDF while that runs | "Each item is found, not found or unclear." |
 | 0:55 | Limitation of liability, click the quote | "The quote is a slice of the contract, with its section and page. Here is the whole clause." |
-| 1:25 | Auto-renewal | "Not found. It does not assume a standard clause." |
-| 1:45 | Ask: "How much notice is needed to end it?" | "The quote is checked against the contract before anything is shown. Then the explanation streams." |
+| 1:25 | Open the NDA: payment terms and limitation of liability | "Not found. It doesn't assume a standard clause, even though the NDA has a warranty disclaimer nearby." |
+| 1:45 | Back in the PDF, ask: "How much notice is needed to end it?" | "The quote is checked against the contract before anything is shown. Then the explanation streams." |
 | 2:15 | Ask: "Does the contract require insurance?" | "It can't answer this from the contract, so it says so." |
 | 2:35 | Refresh the page | "Review and chat are still there." |
 | 2:45 | Browser of user B: empty list, then A's contract address | "Same 404 as a contract that doesn't exist." |

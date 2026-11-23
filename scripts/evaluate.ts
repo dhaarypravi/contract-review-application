@@ -26,6 +26,8 @@ const Expected = z.array(
         accept: z.array(z.enum(["found", "not_found", "unclear"])).min(1),
         /** A "found" quote must contain one of these. */
         quoteIncludes: z.array(z.string()).optional(),
+        /** Claims the summary must not make. */
+        summaryExcludes: z.array(z.string()).optional(),
         why: z.string().optional(),
       }),
     ),
@@ -81,11 +83,13 @@ async function main() {
         finding?.status !== "found" ||
         !rule.quoteIncludes ||
         rule.quoteIncludes.some((text) => flat(finding.quote ?? "").includes(flat(text)));
-      const pass = finding !== undefined && rule.accept.includes(finding.status) && rightClause;
+      const badClaim = rule.summaryExcludes?.find((text) => flat(finding?.summary ?? "").includes(flat(text)));
+      const pass = finding !== undefined && rule.accept.includes(finding.status) && rightClause && !badClaim;
       if (pass) correct++;
 
       console.log(`  ${pass ? "ok  " : "MISS"} ${key.padEnd(24)} ${(finding?.status ?? "not checked").padEnd(11)} ${finding?.summary ?? ""}`);
-      if (!pass) console.log(`       expected ${rule.accept.join(" or ")}${rightClause ? "" : `, quoted the wrong clause: ${finding?.quote}`}`);
+      if (finding?.quote) console.log(`       ${finding.sectionLabel ?? ""}: "${finding.quote.replace(/\s+/g, " ").slice(0, 140)}"`);
+      if (!pass) console.log(`       expected ${rule.accept.join(" or ")}${rightClause ? "" : `, quoted the wrong clause: ${finding?.quote}`}${badClaim ? `, and the summary must not say "${badClaim}"` : ""}`);
     }
     console.log();
   }

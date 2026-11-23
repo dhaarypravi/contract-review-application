@@ -17,7 +17,7 @@ import {
   updateOwnedContract,
 } from "@/services/contracts";
 import { saveFinding } from "@/services/review";
-import { lexicalQuery, openingQuery, retrieve, semanticQuery } from "@/services/retrieve";
+import { ITEM_BUDGET, lexicalQuery, openingQuery, retrieve, semanticQuery } from "@/services/retrieve";
 
 const userA = `test_a_${randomUUID()}`;
 const userB = `test_b_${randomUUID()}`;
@@ -79,9 +79,9 @@ describe("user B holding user A's contract id", () => {
     expect(await semanticQuery(contractA, userB, vector)).toEqual([]);
     expect(await lexicalQuery(contractA, userB, vector, ["liability"])).toEqual([]);
     expect(await openingQuery(contractA, userB)).toEqual([]);
-    expect(await retrieve(contractA, userB, vector, { keywords: ["liability"], includeOpening: true }, 6)).toEqual([]);
+    expect(await retrieve(contractA, userB, vector, { keywords: ["liability"], includeOpening: true }, ITEM_BUDGET)).toEqual([]);
     // The same calls work for the owner, so the checks above are not vacuous.
-    expect(await retrieve(contractA, userA, vector, { keywords: ["liability"] }, 6)).toHaveLength(1);
+    expect(await retrieve(contractA, userA, vector, { keywords: ["liability"] }, ITEM_BUDGET)).toHaveLength(1);
   });
 
   it("keyword search finds a phrase that wraps across lines, and takes symbols literally", async () => {

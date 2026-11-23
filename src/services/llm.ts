@@ -32,9 +32,12 @@ export interface ChatOptions {
 }
 
 const MAX_ATTEMPTS = 4;
-const REQUEST_TIMEOUT_MS = 90_000;
-/** Mutable so that tests do not wait. */
-export const retryPolicy = { baseMs: 1000 };
+/**
+ * A free tier sometimes accepts a request and never answers it. A normal call
+ * takes 1 to 10 seconds, so giving up early and asking again is much faster than
+ * waiting. Mutable so that tests do not wait.
+ */
+export const retryPolicy = { baseMs: 1000, requestMs: 30_000, firstTokenMs: 30_000, streamMs: 180_000 };
 const EMBEDDING_BATCH = 64;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -58,11 +61,23 @@ export async function chat(turns: ChatTurn[], options: ChatOptions = {}): Promis
 export async function* chatStream(turns: ChatTurn[], options: ChatOptions = {}): AsyncGenerator<string> {
   const config = llmConfig();
   const { iterator, first } = await withRetry(async () => {
-    const response = await post("/chat/completions", chatBody(config.chatModel, turns, options, true), options.signal);
-    const iterator = readDeltas(response);
-    const first = await iterator.next();
-    if (first.done) throw busy("empty stream");
-    return { iterator, first };
+    const firstToken = new AbortController();
+    const timer = setTimeout(() => firstToken.abort(), retryPolicy.firstTokenMs);
+    try {
+      const response = await post("/chat/completions", chatBody(config.chatModel, turns, options, true), options.signal, {
+        timeoutMs: retryPolicy.streamMs,
+        giveUp: firstToken.signal,
+      });
+      const iterator = readDeltas(response);
+      const first = await iterator.next();
+      if (first.done) throw busy("empty stream");
+      return { iterator, first };
+    } catch (error) {
+      if (firstToken.signal.aborted && !options.signal?.aborted) throw busy("no first token in time");
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
   }, options.signal);
 
   try {
@@ -116,19 +131,24 @@ function chatBody(model: string, messages: ChatTurn[], options: ChatOptions, str
   return { model, messages, temperature: 0, max_tokens: options.maxTokens ?? 1500, stream };
 }
 
-async function post(path: string, body: unknown, signal?: AbortSignal): Promise<Response> {
+async function post(
+  path: string,
+  body: unknown,
+  signal?: AbortSignal,
+  limits: { timeoutMs: number; giveUp?: AbortSignal } = { timeoutMs: retryPolicy.requestMs },
+): Promise<Response> {
   const config = llmConfig();
   if (!config.apiKey) {
     throw new LlmError("not_configured", `No model provider key is set. Add ${config.keyName} to .env and restart.`);
   }
-  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  const signals = [signal, limits.giveUp, AbortSignal.timeout(limits.timeoutMs)].filter((s) => s !== undefined);
   let response: Response;
   try {
     response = await fetch(config.baseUrl + path, {
       method: "POST",
       headers: { Authorization: `Bearer ${config.apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(body),
-      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
+      signal: AbortSignal.any(signals),
     });
   } catch (error) {
     if (signal?.aborted) throw error;

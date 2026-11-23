@@ -27,7 +27,12 @@
         "accept": ["not_found", "unclear"],
         "why": "There is no liability clause. A warranty disclaimer is adjacent, so unclear is defensible."
       },
-      "confidentiality": { "accept": ["found"], "quoteIncludes": ["in strict confidence"] },
+      "confidentiality": {
+        "accept": ["found"],
+        "quoteIncludes": ["in strict confidence"],
+        "summaryExcludes": ["not specified", "not stated", "no duration", "no visible", "does not specify", "does not state"],
+        "why": "Clause 5.2 gives three years. An early version saw too few clauses and said the duration was not specified."
+      },
       "governing_law": { "accept": ["found"], "quoteIncludes": ["State of Delaware"] },
       "auto_renewal": { "accept": ["found"], "quoteIncludes": ["automatically renew for successive periods"] }
     }

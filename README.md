@@ -107,7 +107,7 @@ Contracts are split on **their own clause headings**, never on a fixed window. C
 
 ## Retrieval for each checklist item
 
-Each item has **its own query, written to read like the clause**, because embedding the words "limitation of liability" does not find "neither party shall be liable for indirect damages". Two searches run inside the one contract: by meaning (pgvector cosine) and by keyword. They are merged as `0.65 × similarity + 0.35 × keyword share − 0.05 × negative keywords`, and the best six clauses go to the model. The keyword part rescues clauses the embedding ranks low; it does not drive the ranking.
+Each item has **its own query, written to read like the clause**, because embedding the words "limitation of liability" does not find "neither party shall be liable for indirect damages". Two searches run inside the one contract: by meaning (pgvector cosine) and by keyword. They are merged as `0.65 × similarity + 0.35 × keyword share − 0.05 × negative keywords`, and the best clauses go to the model: at least six, and up to fourteen while they total under 6,000 characters, because six one-sentence sub-clauses are only a paragraph. The keyword part rescues clauses the embedding ranks low; it does not drive the ranking.
 
 | Item | What is particular about it |
 |---|---|
@@ -148,18 +148,28 @@ To try it: copy a contract's id as user A, sign in as user B, and in the browser
 
 ## Errors and limits
 
-Rate limits, busy providers, empty replies and unreadable answers are retried with backoff (within a request, then up to three job attempts). A daily limit is not retried, and is reported as such. If some items cannot be checked, the review is kept and those items say "Not checked" with the reason. Messages shown to users never contain provider output.
+Rate limits, busy providers, calls that hang, empty replies and unreadable answers are retried with backoff (within a request, then up to three job attempts). A daily limit is not retried, and is reported as such. If some items cannot be checked, the review is kept and those items say "Not checked" with the reason. Messages shown to users never contain provider output.
 
 ## Tests and evaluation
 
-`npm test` runs 98 tests: quote checking in both directions, the chat gate (every case also fed one character at a time, because a stream can split anywhere), chunking and extraction (including a real PDF and an automatically numbered Word file), isolation, and the pipeline against a stand-in model that invents quotes, returns broken JSON, throttles, and fails mid-stream.
+`npm test` runs 104 tests: quote checking in both directions, the chat gate (every case also fed one character at a time, because a stream can split anywhere), chunking and extraction (including a real PDF and an automatically numbered Word file), isolation, and the pipeline against a stand-in model that invents quotes, returns broken JSON, throttles, and fails mid-stream.
 
 `npm run evaluate` runs the real pipeline over two sample contracts with complementary gaps, and prints the items that are right and the "found" items whose quote is verified. Some expectations accept more than one status, with the reason written beside them in `samples/expected.json`. Two contracts are a smoke test, not an accuracy figure.
+
+Result on 23 November 2026 with `gemini-flash-lite-latest`:
+
+```
+checklist items correct       : 16/16
+"found" with a verified quote : 14/14
+```
+
+The first run scored the same, but reading its summaries showed a wrong one: for the NDA it said that the confidentiality period "is not specified", while clause 5.2 says three years. The model had been shown too few clauses and described the whole contract from them. It is now shown more, told never to say what a contract lacks, and the evaluation fails if that claim returns. A review took between 20 seconds and 2 minutes, depending on the provider's free tier.
 
 ## Known limitations
 
 - **A verified quote can still be a poor match for its summary.** The check proves the words are in the contract, not that the summary follows from them.
-- **A search miss can become "not found".** The model sees the six best clauses for an item, not the whole contract.
+- **A search miss can become "not found".** For a long contract the model sees the best 6 to 14 clauses for an item, not the whole text.
+- **One quote per item.** A summary can draw on several sub-clauses (for example notice, breach and insolvency under termination), while only the main one is quoted.
 - The same holds for the chat: the gate proves each quote is real, but the explanation after it is the model's.
 - The gate recognises quotations in double quotes and quote tags. Wording in single quotes is treated as ordinary text.
 - A quote may skip words with "...", if its parts appear in order; the full span is shown.
@@ -184,6 +194,6 @@ Rate limits, busy providers, empty replies and unreadable answers are retried wi
 
 ## How AI tools were used
 
-Claude Code (Claude Opus 5.5) wrote the code, the tests, the fictional sample contracts and this README, working from a written build specification. It also ran the checks: unit and integration tests and, against a stand-in model, an HTTP run with signed tokens for two users, a browser run through the contract screens, and killing the worker in the middle of a review.
+Claude Code (Claude Opus 5.5) wrote the code, the tests, the fictional sample contracts and this README, working from a written build specification. It also ran the checks: unit and integration tests; an HTTP run with signed tokens for two users and killing the worker in the middle of a review, both against a stand-in model; and browser runs, the last of them with real Clerk accounts and the real model.
 
 Checks on real files found problems that reading the code had not: Next.js cutting uploads at 10 MB when middleware is present, Word clause numbers disappearing, keyword search missing phrases that wrap across PDF lines, and double-spaced PDFs being read as separate paragraphs. A test written for the chat gate caught an unfinished tag carrying an unchecked quote through, before it was released.

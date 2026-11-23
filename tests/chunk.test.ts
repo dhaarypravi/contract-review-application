@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { chunkContract } from "@/services/chunk";
 import { formatNumber, Numbering } from "@/services/docx-numbering";
 import { dropRunningHeaders, extract, pageAt, sniffKind } from "@/services/extract";
+import { withinBudget } from "@/services/retrieve";
 import { findQuote } from "@/services/verify";
 
 const sample = (name: string) => readFileSync(new URL(`../samples/${name}`, import.meta.url));
@@ -106,6 +107,16 @@ describe("extraction", () => {
     const pages = [{ page: 1, start: 0, end: 10 }, { page: 2, start: 11, end: 20 }];
     expect([pageAt(pages, 0), pageAt(pages, 9), pageAt(pages, 11), pageAt(pages, 19)]).toEqual([1, 1, 2, 2]);
   });
+});
+
+describe("withinBudget", () => {
+  const of = (...lengths: number[]) => lengths.map((length) => ({ content: "x".repeat(length) }));
+  const budget = { min: 2, max: 5, maxChars: 100 };
+
+  it("takes many short clauses, up to the maximum", () => expect(withinBudget(of(10, 10, 10, 10, 10, 10), budget)).toHaveLength(5));
+  it("stops at the character budget", () => expect(withinBudget(of(40, 40, 40, 40), budget)).toHaveLength(2));
+  it("always gives the minimum, however long", () => expect(withinBudget(of(900, 900, 900), budget)).toHaveLength(2));
+  it("handles fewer than the minimum", () => expect(withinBudget(of(10), budget)).toHaveLength(1));
 });
 
 describe("Word numbering", () => {
