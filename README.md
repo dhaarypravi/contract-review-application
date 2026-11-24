@@ -26,6 +26,8 @@ Free tiers may log or train on what is sent. Use fictional contracts, such as th
 ### 3. Run
 
 ```bash
+git clone https://github.com/dhaarypravi/contract-review-application.git
+cd contract-review-application
 cp .env.example .env      # then fill in the keys
 docker compose up --build
 ```
